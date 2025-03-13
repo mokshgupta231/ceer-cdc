@@ -40,7 +40,6 @@ import hmac
 import time
 import calendar
 import socket
-import os
 import ssl
 import copy
 
