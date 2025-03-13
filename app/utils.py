@@ -11,7 +11,7 @@ def send_notify_login_request(site_uid: str):
     request = GSRequest(API_KEY, SECRET_KEY, method, params, useHTTPS=True)
     response = request.send()
 
-    if response.getErrorCode() != 206002:
+    if response.getErrorCode() != 206001:
         raise Exception(f"Error in accounts.notifyLogin: {response.getErrorMessage()}")
 
     return response.getData().get("regToken")
