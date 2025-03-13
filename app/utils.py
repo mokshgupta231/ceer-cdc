@@ -8,7 +8,7 @@ def send_register_request(site_uid: str):
     method = "accounts.notifyLogin"
     params = {"siteUID": site_uid, "skipValidation": True, "format": "json"}
 
-    request = GSRequest(API_KEY, SECRET_KEY, method, params)
+    request = GSRequest(API_KEY, SECRET_KEY, method, params, useHTTPS=True)
     response = request.send()
 
     if response.getErrorCode() != 0:
