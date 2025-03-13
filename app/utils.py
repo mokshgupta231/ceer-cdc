@@ -6,7 +6,7 @@ SECRET_KEY = "AQQCnE0YaT4aqFser4a+KXqLu4X14JyWbGZHEegujWA="
 
 def send_register_request(site_uid: str):
     method = "accounts.notifyLogin"
-    params = {"siteUID": site_uid, "skipValidation": True, "format": "json"}
+    params = {"siteUID": site_uid, "format": "json"}
 
     request = GSRequest(API_KEY, SECRET_KEY, method, params, useHTTPS=True)
     response = request.send()
