@@ -70,7 +70,6 @@ class GSException(Exception):
 class GSRequest:
     DEFAULT_API_DOMAIN = "us1.gigya.com"
     VERSION = "3.5.2"
-    caCertsPath = "cacert.pem"
 
     _domain = ""
     _path = ""
@@ -172,11 +171,6 @@ class GSRequest:
         if self._method is None or (self._apiKey is None and self._userKey is None):
             return GSResponse(
                 self._method, None, self._params, 400002, None, self._traceLog
-            )
-
-        if self._useHTTPS and not os.path.isfile(GSRequest.caCertsPath):
-            return GSResponse(
-                self._method, None, self._params, 400003, None, self._traceLog
             )
 
         try:
@@ -371,10 +365,6 @@ class GSRequest:
         if value:
             self._traceLog.append(str(name) + "=" + repr(value))
 
-    @staticmethod
-    def setCACertsPath(path):
-        GSRequest.caCertsPath = path
-
 
 class GSResponse:
     """
@@ -540,12 +530,10 @@ class ValidHTTPSHandler(HTTPSHandler):
         )
 
     def create_context(self):
-        context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+        context = ssl.create_default_context()
         context.minimum_version = ssl.TLSVersion.TLSv1_2
-        context.load_verify_locations(GSRequest.caCertsPath)
         context.verify_mode = ssl.CERT_REQUIRED
         context.check_hostname = self._enableHostCheck
-
         return context
 
 
