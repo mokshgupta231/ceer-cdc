@@ -4,7 +4,7 @@ API_KEY = "4_kQKX1P9doAvP4x3kfd9N6g"
 SECRET_KEY = "AQQCnE0YaT4aqFser4a+KXqLu4X14JyWbGZHEegujWA="
 
 
-def send_register_request(site_uid: str):
+def send_lite_register_request(site_uid: str):
     method = "accounts.notifyLogin"
     params = {"siteUID": site_uid, "format": "json"}
 
