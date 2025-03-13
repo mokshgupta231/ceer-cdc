@@ -17,7 +17,7 @@ def register(request: RegisterRequest):
 @router.post("/set-account-info/")
 def register(request: SetAccountInfoRequest):
     try:
-        user_data = set_account_info_service(request)
+        set_account_info_service(request)
         return {"msg": "Account information updated successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
