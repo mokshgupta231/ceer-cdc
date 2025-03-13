@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class RegisterRequest(BaseModel):
+class NotifyLoginRequest(BaseModel):
     site_uid: str
 
 

@@ -1,8 +1,8 @@
-from app.utils import send_lite_register_request, send_set_account_info_request
+from app.utils import send_notify_login_request, send_set_account_info_request
 
 
-def lite_register_service(request):
-    return send_lite_register_request(site_uid=request.site_uid)
+def notify_login_service(request):
+    return send_notify_login_request(site_uid=request.site_uid)
 
 
 def set_account_info_service(request):
