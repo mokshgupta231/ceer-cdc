@@ -31,7 +31,6 @@ def send_set_account_info_request(
     response = request.send()
 
     if response.getErrorCode() != 0:
-        print(response.getData())
         raise Exception(
             f"Error in accounts.setAccountInfo: {response.getErrorMessage()}"
         )
