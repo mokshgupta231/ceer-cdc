@@ -1,0 +1,31 @@
+# Byte-compiled Python files
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environment
+venv/
+
+# Environment variables
+.env
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.sublime-workspace
+*.sublime-project
+
+# Test coverage reports
+coverage/
+*.coverage
+htmlcov/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
