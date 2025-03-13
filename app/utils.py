@@ -11,7 +11,27 @@ def send_register_request(site_uid: str):
     request = GSRequest(API_KEY, SECRET_KEY, method, params, useHTTPS=True)
     response = request.send()
 
-    if response.getErrorCode() != 0:
+    if response.getErrorCode() != 206002:
         raise Exception(f"Error in accounts.notifyLogin: {response.getErrorMessage()}")
 
-    return response.getData()
+    return response.getData().get("regToken")
+
+
+def send_set_account_info_request(
+    reg_token: str, first_name: str, last_name: str, email: str
+):
+    method = "accounts.setAccountInfo"
+    params = {
+        "regToken": reg_token,
+        "profile": {"firstName": first_name, "lastName": last_name, "email": email},
+        "format": "json",
+    }
+
+    request = GSRequest(API_KEY, SECRET_KEY, method, params, useHTTPS=True)
+    response = request.send()
+
+    if response.getErrorCode() != 0:
+        print(response.getData())
+        raise Exception(
+            f"Error in accounts.setAccountInfo: {response.getErrorMessage()}"
+        )
