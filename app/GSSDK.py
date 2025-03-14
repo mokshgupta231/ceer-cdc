@@ -1,61 +1,29 @@
-#! /usr/bin/env python
-# -*- encoding: utf-8 -*-
 from __future__ import unicode_literals
-import sys
-
-MAJOR_VERSION_INDEX = 0
-MINOR_VERSION_INDEX = 1
-
-PY_3 = sys.version_info[MAJOR_VERSION_INDEX] >= 3
-
-PY_3_9_OR_GREATER = PY_3 and sys.version_info[MINOR_VERSION_INDEX] >= 9
-
-if PY_3:
-    import urllib.request
-    from urllib.request import build_opener
-    from urllib.request import HTTPHandler
-    from urllib.request import ProxyHandler
-    from urllib.request import install_opener
-    from urllib.request import urlopen
-    from http.client import HTTPSConnection
-    from http.client import HTTPS_PORT
-    from urllib.request import HTTPSHandler
-    from urllib.parse import quote_plus
-    from urllib.parse import urlparse
-else:
-    import urllib.request
-    import urllib.error
-    from urllib.request import build_opener
-    from urllib.request import HTTPHandler
-    from urllib.request import ProxyHandler
-    from urllib.request import install_opener
-    from urllib.request import urlopen
-    from http.client import HTTPSConnection
-    from http.client import HTTPS_PORT
-    from urllib.request import HTTPSHandler
-    from urllib.parse import quote_plus
-    from urllib.parse import urlparse
-
+import urllib.request
+from urllib.request import (
+    build_opener,
+    HTTPHandler,
+    ProxyHandler,
+    install_opener,
+    urlopen,
+    HTTPSHandler,
+)
+from http.client import HTTPSConnection, HTTPS_PORT
+from urllib.parse import quote_plus, urlparse
 import hmac
 import time
 import calendar
 import socket
 import ssl
 import copy
-
 from hashlib import sha1
 from base64 import b64decode, b64encode
-from json import loads
-from json import dumps as jsonstringify
+from json import loads, dumps as jsonstringify
 from re import search
 from random import randrange
 
-if PY_3:
-    string_types = str
-    integer_types = int
-else:
-    string_types = basestring
-    integer_types = (int, long)
+string_types = str
+integer_types = int
 
 
 class GSException(Exception):
@@ -93,18 +61,6 @@ class GSRequest:
         useHTTPS=False,
         userKey=None,
     ):
-        """
-        Constructs a request using the apiKey and secretKey.
-        @param apiKey
-        @param secretKey
-        @param apiMethod the api method (including namespace) to call. for example: socialize.getUserInfo
-        If namespaces is not supplied "socialize" is assumed
-        @param params the request parameters
-        @param useHTTPS useHTTPS set this to true if you want to use HTTPS.
-        @param userKey A key of an admin user with extra permissions.
-        If this parameter is provided, then the secretKey parameter is assumed to be the admin user's secret key and not the site's secret key.
-        """
-
         if apiMethod is None:
             return
 
@@ -145,8 +101,6 @@ class GSRequest:
         self.traceField("proxy", proxy)
 
     def send(self, timeout=None):
-        """Send the request synchronously"""
-
         if self._method[0:1] == "/":
             self._method = self._method[1:]
 
@@ -218,15 +172,11 @@ class GSRequest:
         timeout=None,
         userKey=None,
     ):
-
         params["sdk"] = "python_" + self.VERSION
-        # prepare query params
         protocol = "https" if (useHTTPS or not secret) else "http"
         resourceURI = protocol + "://" + self._domain + path
 
         timestamp = calendar.timegm(time.gmtime())
-
-        # unique token
         nonce = str(SigUtils.currentTimeMillis()) + str(randrange(1000))
         httpMethod = "POST"
 
@@ -238,7 +188,6 @@ class GSRequest:
             params["timestamp"] = timestamp
             params["nonce"] = nonce
 
-            # signature
             signature = self.getOAuth1Signature(
                 secret, httpMethod, resourceURI, useHTTPS, params
             )
@@ -246,13 +195,11 @@ class GSRequest:
         else:
             params["oauth_token"] = token
 
-        # get rest response.
         res = self.curl(resourceURI, params, timeout)
 
         return res
 
     def curl(self, url, params=None, timeout=None):
-
         queryString = self.buildQS(params)
 
         self.traceField("URL", url)
@@ -271,7 +218,7 @@ class GSRequest:
 
         queryString = queryString.encode("utf-8")
 
-        currentOpener = urllib.request._opener if PY_3 else urllib2._opener
+        currentOpener = urllib.request._opener
         install_opener(opener)
 
         if timeout:
@@ -287,10 +234,8 @@ class GSRequest:
         return result
 
     def buildQS(self, params):
-        """Converts a params dictionary to a sorted query string"""
         queryString = ""
         amp = ""
-        # keys = params.keys()
         keys = list(params.keys())
         keys.sort()
         for key in keys:
@@ -304,7 +249,6 @@ class GSRequest:
     def getOAuth1Signature(
         self, key, httpMethod, url, isSecureConnection, requestParams
     ):
-        # Create the BaseString.
         baseString = self.calcOAuth1BaseString(
             httpMethod, url, isSecureConnection, requestParams
         )
@@ -333,10 +277,8 @@ class GSRequest:
 
         normalizedUrl += u.path
 
-        # Create a sorted list of query parameters
         queryString = self.buildQS(requestParams)
 
-        # Construct the base string from the HTTP method, the URL and the parameters
         baseString = (
             httpMethod.upper()
             + "&"
@@ -366,12 +308,6 @@ class GSRequest:
 
 
 class GSResponse:
-    """
-    Wraps the server's response.
-    If the request was sent with the format set to "json", the getData() will return null and you should use getResponseText() instead.
-    We only parse response text into a dictionary if request format is set "json."
-    """
-
     errorCode = 0
     errorMessage = None
     rawData = ""
@@ -537,7 +473,6 @@ class ValidHTTPSHandler(HTTPSHandler):
 
 
 class SigUtils:
-
     @staticmethod
     def validateUserSignature(UID, timestamp, secret, signature, expiration=None):
         baseString = timestamp + "_" + UID
@@ -622,10 +557,6 @@ class SigUtils:
 
 
 class Utils:
-
     @staticmethod
     def jsonparse(source):
-        if PY_3_9_OR_GREATER:
-            return loads(source)
-        else:
-            return loads(source, encoding="utf-8")
+        return loads(source)
