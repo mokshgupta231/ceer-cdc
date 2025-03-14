@@ -10,3 +10,7 @@ class SetAccountInfoRequest(BaseModel):
     first_name: str
     last_name: str
     email: str
+
+
+class FinalizeRegistrationRequest(BaseModel):
+    reg_token: str

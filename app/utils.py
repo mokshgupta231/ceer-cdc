@@ -12,7 +12,9 @@ def send_notify_login_request(site_uid: str):
     response = request.send()
 
     if response.getErrorCode() != 206001:
-        raise Exception(f"Error in accounts.notifyLogin: {response.getErrorMessage()}")
+        raise Exception(
+            f"Error in accounts.notifyLogin (Error Code {response.getErrorCode()}): {response.getErrorMessage()}"
+        )
 
     return response.getData().get("regToken")
 
@@ -32,5 +34,21 @@ def send_set_account_info_request(
 
     if response.getErrorCode() != 0:
         raise Exception(
-            f"Error in accounts.setAccountInfo: {response.getErrorMessage()}"
+            f"Error in accounts.setAccountInfo (Error Code {response.getErrorCode()}): {response.getErrorMessage()}"
+        )
+
+
+def send_finalize_registration_request(reg_token: str):
+    method = "accounts.finalizeRegistration"
+    params = {
+        "regToken": reg_token,
+        "format": "json",
+    }
+
+    request = GSRequest(API_KEY, SECRET_KEY, method, params, useHTTPS=True)
+    response = request.send()
+
+    if response.getErrorCode() != 0:
+        raise Exception(
+            f"Error in accounts.finalizeRegistration (Error Code {response.getErrorCode()}): {response.getErrorMessage()}"
         )
