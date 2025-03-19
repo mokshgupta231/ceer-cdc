@@ -10,6 +10,7 @@ class SetAccountInfoRequest(BaseModel):
     first_name: str
     last_name: str
     email: str
+    terms: dict
 
 
 class FinalizeRegistrationRequest(BaseModel):

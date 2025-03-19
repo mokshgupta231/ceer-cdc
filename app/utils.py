@@ -20,12 +20,19 @@ def send_notify_login_request(site_uid: str):
 
 
 def send_set_account_info_request(
-    reg_token: str, first_name: str, last_name: str, email: str
+    reg_token: str,
+    first_name: str,
+    last_name: str,
+    email: str,
+    terms: dict,
 ):
     method = "accounts.setAccountInfo"
     params = {
         "regToken": reg_token,
         "profile": {"firstName": first_name, "lastName": last_name, "email": email},
+        "preferences": {
+            "terms": terms,
+        },
         "format": "json",
     }
 
