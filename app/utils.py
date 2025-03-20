@@ -1,4 +1,5 @@
 from app.GSSDK import GSRequest
+from app.exceptions import LoginNotificationException
 
 API_KEY = "4_kQKX1P9doAvP4x3kfd9N6g"
 SECRET_KEY = "AQQCnE0YaT4aqFser4a+KXqLu4X14JyWbGZHEegujWA="
@@ -11,12 +12,11 @@ def send_notify_login_request(site_uid: str):
     request = GSRequest(API_KEY, SECRET_KEY, method, params, useHTTPS=True)
     response = request.send()
 
-    if response.getErrorCode() != 206001:
-        raise Exception(
-            f"Error in accounts.notifyLogin (Error Code {response.getErrorCode()}): {response.getErrorMessage()}"
+    if response.getErrorCode() != 0:
+        raise LoginNotificationException(
+            f"Error in accounts.notifyLogin (Error Code {response.getErrorCode()}): {response.getErrorMessage()}",
+            response.getData().get("regToken"),
         )
-
-    return response.getData().get("regToken")
 
 
 def send_set_account_info_request(
